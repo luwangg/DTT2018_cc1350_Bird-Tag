@@ -1,20 +1,26 @@
-Example Summary
+ Project Summary
 ---------------
-In this example you will learn how to setup the radio to do bi-directional 
-communication. The Echo RX example start off by putting the radio in receiver 
-mode and waits for a packet to be transmitted. When it receives a packet it 
-switches the radio to transmitter mode and re-transmits the received
-packet (echo). This example is meant to be used with the Echo TX example or 
-SmartRF Studio. For every packet echo, Board_PIN_LED2 is toggled. The 
-frequency and other RF settings can be modified using SmartRF Studio.
+This project combines 3 examples of SimpleLink Example of cc1350, which are pinShutdown_CC1350_LAUNCHXL_tirtos_ccs
+i2ctmp007_CC1350_LAUNCHXL_tirtos_ccs
+rfEchoRx_CC1350_LAUNCHXL_tirtos_ccs
+
+On the cc1310 Launchpad, we write programs for 2 tasks and register them in RTOS to be controlled by the hardware interrupts. We substitute the Real Time Clock with buttons on the Launchpad to simulate the hardware interrupts. Once button1 is pressed, task 1 of receiving RF packet will be running, the green LED lights up, indicating it is waiting for a packet. After it receives a packet, it will transmit the packet it receives and the red LED toggles to indicate that transmission; once button 0 is pressed, task 2 of reading the data from light sensor MAX44009 will be running, and red LED toggles to indicate the reading process of 20 lux data. During the running time of any of these 2 tasks, the hardware interrupt from the 2 buttons in the system is blocked. After tasks finish, the system goes back to standby mode.
+
+Main program: main_tirtos.c
+Task 1 program: rfEchoRx.c
+Task 2 program: i2ctmp007.c
 
 Peripherals Exercised
 ---------------------
-* `Board_PIN_LED2` - Blinking indicates a successful reception and 
+During the Process of Task 1:
+* `Board_PIN_LED0` - Blinking indicates a successful reception and 
   re-transmission of a packet (echo)
 * `Board_PIN_LED1` - Indicates an error in either reception of a packet or 
   in its re-transmission
-
+  
+  During the Process of Task 2:
+ * `Board_PIN_LED0` - Blinking indicates a successful Reading operation from the light sensor Max44009 via i2c.
+ 
 Resources & Jumper Settings
 ---------------------------
 > If you're using an IDE (such as CCS or IAR), please refer to Board.html in 
@@ -22,7 +28,7 @@ your project directory for resources used and board-specific jumper settings.
 Otherwise, you can find Board.html in the directory 
 &lt;SDK_INSTALL_DIR&gt;/source/ti/boards/&lt;BOARD&gt;.
 
-Example Usage
+Details on rfEchoRx.c
 -------------
 The user will require two launchpads, one running rfEchoTx (`Board_1`), 
 another running rfEchoRx (`Board_2`). Run Board_2 first, followed by 
